@@ -1,0 +1,99 @@
+{
+    "GameObjects": {
+        "Cube": {
+            "isActive": true,
+            "meshes": {
+                "material": "default.mat",
+                "model": "cube.obj",
+                "render": 0
+            },
+            "parent": "Root",
+            "position": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "rotation": [
+                0.0,
+                -0.0,
+                0.0
+            ],
+            "scale": [
+                10.0,
+                1.0,
+                10.0
+            ],
+            "tag": "Tag"
+        },
+        "Light": {
+            "isActive": true,
+            "light": {
+                "color": [
+                    0.5,
+                    0.5,
+                    0.5
+                ],
+                "direction": [
+                    0.0,
+                    -1.0,
+                    0.0
+                ],
+                "type": "directional"
+            },
+            "parent": "Root",
+            "position": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "tag": "Tag"
+        },
+        "PhysicCube": {
+            "isActive": true,
+            "meshes": {
+                "material": "default.mat",
+                "model": "cube.obj",
+                "render": 0
+            },
+            "parent": "Root",
+            "position": [
+                0.0,
+                5.43626594543457,
+                0.0
+            ],
+            "rigidBody": {
+                "collision": {
+                    "size": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "type": "box"
+                },
+                "collisionCallbacksEnabled": false,
+                "motionType": 2
+            },
+            "rotation": [
+                0.0,
+                -0.0,
+                0.0
+            ],
+            "scale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "tag": "Tag"
+        }
+    }
+}
