@@ -68,12 +68,12 @@ public:
     Vector3D& operator*=(const Vector3D& other);
     Vector3D& operator/=(float scalar);
     float Norm() const;
-	Vector3D Normalize() const;
+	Vector3D Normalized() const;
     float DotProduct(const Vector3D& other) const;
     Vector3D CrossProduct(const Vector3D& other) const;
     static Vector3D Lerp(const Vector3D& a, const Vector3D& b, float t);
 
-    static Vector3D Normalize(Vector3D v);
+    static Vector3D Normalized(Vector3D v);
     static Vector3D CrossProduct(Vector3D v1, Vector3D v2); 
 };
 
@@ -107,7 +107,7 @@ public:
         float halfAngle = angleRad * 0.5f;
         float s = sinf(halfAngle);
 
-        Vector3D normAxis = axis.Normalize();
+        Vector3D normAxis = axis.Normalized();
 
         Quaternion q;
         q.w = cosf(halfAngle);

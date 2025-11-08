@@ -97,8 +97,8 @@ void Camera::SetOrthogonalMatrix(float left, float right, float bottom, float to
 
 void Camera::SetViewMatrix()
 {
-    f = Vector3D::Normalize(center - eye);
-    r = Vector3D::Normalize(Vector3D::CrossProduct(f, up));
+    f = Vector3D::Normalized(center - eye);
+    r = Vector3D::Normalized(Vector3D::CrossProduct(f, up));
     u = Vector3D::CrossProduct(r, f);
 
     viewMatrix = {
@@ -112,6 +112,26 @@ void Camera::SetViewMatrix()
 void Camera::SetViewProjectionMatrix()
 {
     viewProjectionMatrix = projectionMatrix * viewMatrix;;
+}
+
+void Camera::SetRotation(const Vector3D& eulerDeg)
+{
+    worldPitch = DegToRad(eulerDeg.x);
+    worldYaw = DegToRad(eulerDeg.y);
+    worldRoll = DegToRad(eulerDeg.z);
+
+    Mat4 rotationMatrix =
+        Mat4::RotationZ(worldRoll) *
+        Mat4::RotationY(worldYaw) *
+        Mat4::RotationX(worldPitch);
+
+    f = Mat4::TransformDirection(rotationMatrix, Vector3D(0, 0, -1));
+    u = Mat4::TransformDirection(rotationMatrix, Vector3D(0, 1, 0));
+    r = Vector3D::CrossProduct(f, u).Normalized();
+
+    center = eye + f;
+
+    SetViewMatrix(); 
 }
 
 void Camera::Move(float deltaTime)

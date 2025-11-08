@@ -102,17 +102,39 @@ void InspectorUI::TransformComponent() const
 	ImGui::Indent(10.f);
 	if (ImGui::CollapsingHeader("Transform"))
 	{
-		if (ImGui::InputFloat3("Position", &currentObject->transform.pos.x)) {}
-		if (ImGui::InputFloat3("Rotation", &currentObject->transform.eulerRot.x)) {}
+		currentObject->transform.pos = DrawVector3Control("Position", currentObject->transform.pos);
+		currentObject->transform.eulerRot = DrawVector3Control("Rotation", currentObject->transform.eulerRot);
+		currentObject->transform.scale = DrawVector3Control("Scale", currentObject->transform.scale);
 
-		if (ImGui::InputFloat3("Scale", &currentObject->transform.scale.x))
-		{
-			if (auto* rigidBody = currentObject->GetComponent<RigidBody>())
-				rigidBody->SetScale(currentObject->transform.scale);
-		}
+		if (auto* rigidBody = currentObject->GetComponent<RigidBody>())
+			rigidBody->SetScale(currentObject->transform.scale);
 	}
 	ImGui::Unindent(10.f);
 	ImGui::Dummy(ImVec2(0.0f, 10.0f));
+}
+
+Vector3D InspectorUI::DrawVector3Control(const char* label, Vector3D value)  const
+{
+	ImGui::PushID(label);
+	ImGui::PushItemWidth(60);
+
+	//  X
+	ImGui::DragFloat("X", &value.x, 0.1f);
+	ImGui::SameLine();
+
+	//  Y
+	ImGui::DragFloat("Y", & value.y, 0.1f);
+	ImGui::SameLine();
+
+	//  Z
+	ImGui::DragFloat("Z", &value.z, 0.1f);
+	ImGui::SameLine();
+
+	ImGui::Text(label);
+
+	ImGui::PopItemWidth();
+	ImGui::PopID(); 
+	return value;
 }
 
 void InspectorUI::DisplayComponents()
@@ -720,11 +742,18 @@ void InspectorUI::CapsuleColliderComponent()
 
 void InspectorUI::CameraComponent()
 {
-	ImGui::Indent(10.f);
-	if (ImGui::CollapsingHeader("Camera"))
+	if (Camera* camera = currentObject->GetComponent<Camera>())
 	{
-		if (Camera* camera = currentObject->GetComponent<Camera>())
-			ImGui::InputFloat3("Offset", &camera->offset.x);
+		camera->offset = currentObject->transform.pos;
+		camera->SetRotation(currentObject->transform.eulerRot);
+
+		ImGui::Indent(10.f);
+		if (ImGui::CollapsingHeader("Camera"))
+		{
+			ImGui::PushItemWidth(60);
+			ImGui::DragFloat("FOV", &camera->fovY, 0.1f);
+			ImGui::PopItemWidth();
+		}
 	}
 }
 

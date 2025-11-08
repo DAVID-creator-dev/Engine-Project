@@ -26,12 +26,16 @@ public:
     Mat4 GetViewProjectionMatrix() const { return viewProjectionMatrix; }
     Mat4 GetOrthogonalMatrix() const { return orthogonalMatrix; }
 
+    void SetRotation(const Vector3D& eulerDeg);
+
     Vector3D eye = { 0.f, 0.f, 3.0f };
     Vector3D center = { 0.f, 0.f, -2.f };
     Vector3D up = { 0.f, 1.f, 0.f };
-    Vector3D offset = { 0.0f, 1.8f, 0.0f };
+    Vector3D offset = { 0.0f, 0.0f, 0.0f };
     Vector3D forward;
     Vector3D f, r, u;
+
+    float fovY;
 
 private:
     void Input(float deltaTime);
@@ -52,6 +56,7 @@ private:
 
     float worldPitch = 0;
     float worldYaw = 0;
+	float worldRoll = 0;
 
     float movementSpeed = 20.f;
     float sensitivity = 1.f;
@@ -59,7 +64,6 @@ private:
     float m_near;
     float m_far;
     float aspectRatio;
-    float fovY;
 
     bool isRightMouseHeld = false;
     bool wasRightMouseDown = false;

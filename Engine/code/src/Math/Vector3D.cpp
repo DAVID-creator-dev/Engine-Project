@@ -28,7 +28,7 @@ float Vector3D::Norm() const {
     return std::sqrt(x * x + y * y + z * z);
 }
 
-Vector3D Vector3D::Normalize() const
+Vector3D Vector3D::Normalized() const
 {
     float norm = Norm();
     if (norm != 0.0f) {
@@ -37,7 +37,7 @@ Vector3D Vector3D::Normalize() const
     return Vector3D(0.0f, 0.0f, 0.0f);
 }
 
-Vector3D Vector3D::Normalize(Vector3D v)
+Vector3D Vector3D::Normalized(Vector3D v)
 {
 	float norm = v.Norm();
 	if (norm != 0.0f) {

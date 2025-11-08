@@ -98,7 +98,6 @@
     <ClCompile Include="code\src\Core\UI\Windows\LogUI.cpp" />
     <ClCompile Include="code\src\Core\UI\Windows\MenuUI.cpp" />
     <ClCompile Include="code\src\Core\UI\Windows\PerformanceUI.cpp" />
-    <ClCompile Include="code\include\Core\UI\Windows\UIWindow.h" />
     <ClCompile Include="code\include\LowRenderer\Text.cpp" />
     <ClCompile Include="code\src\Core\Engine.cpp" />
     <ClCompile Include="code\src\Core\UI\Component\MeshRendererUI.cpp" />
@@ -107,7 +106,6 @@
     <ClCompile Include="code\src\Core\UI\Windows\HierarchyUI.cpp" />
     <ClCompile Include="code\src\Core\UI\Windows\InspectorUI.cpp" />
     <ClCompile Include="code\src\Core\UI\Windows\RenderingUI.cpp" />
-    <ClCompile Include="code\src\Core\UI\Windows\UIWindow.cpp" />
     <ClCompile Include="code\src\GameBehaviour\GameStateManager.cpp" />
     <ClCompile Include="code\src\GameBehaviour\MonoBehaviour.cpp" />
     <ClCompile Include="code\src\GameBehaviour\ScriptRegistry.cpp" />

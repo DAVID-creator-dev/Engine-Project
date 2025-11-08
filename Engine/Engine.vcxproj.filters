@@ -404,12 +404,6 @@
     <ClCompile Include="code\src\Core\UI\Windows\PerformanceUI.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="code\include\Core\UI\Windows\UIWindow.h">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="code\src\Core\UI\Windows\UIWindow.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
     <ClCompile Include="code\src\Core\UI\Windows\RenderingUI.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>

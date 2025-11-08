@@ -1,4 +1,5 @@
 #pragma once
+#include "Math/Math.h"
 
 class GameObject;
 class Camera;
@@ -36,6 +37,7 @@ public:
 
 private:
     void TransformComponent() const;
+    Vector3D DrawVector3Control(const char* label, Vector3D value) const;
     void DisplayComponents();
     void AddComponents();
     void AddScriptComponents();
