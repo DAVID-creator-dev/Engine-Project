@@ -1,6 +1,6 @@
 # Echo Engine – Gold Version
 
-> A modern, modular, and lightweight C# game engine built for learning, prototyping, and creating 3D experiences.  
+> A modern, modular, and lightweight C++ game engine built for learning, prototyping, and creating 3D experiences.  
 > Featuring a real-time editor, rendering, and dynamic scripting with hot reload.
 
 ---
