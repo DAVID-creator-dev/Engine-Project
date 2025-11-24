@@ -3,6 +3,10 @@
 > A modern, modular, and lightweight C++ game engine built for learning, prototyping, and creating 3D experiences.  
 > Featuring a real-time editor, rendering, and dynamic scripting with hot reload.
 
+<p align="center">
+  <img src="https://raw.githubusercontent.com/DAVID-creator-dev/Engine-Project/refs/heads/main/docs/images/demo.gif" alt="Demo">
+</p>
+
 ---
 
 ## Table of Contents
