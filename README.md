@@ -74,3 +74,5 @@ It provides real-time editing tools, a component-based architecture, and a rende
 - Lightweight **MonoBehaviour-style** scripting system for C#  
 - Attach scripts to GameObjects for interactive and dynamic behaviors  
 - **Hot Reload Support** – Edit and recompile scripts on the fly without restarting the engine  
+
+© 2026 – C++ Engine-Project
