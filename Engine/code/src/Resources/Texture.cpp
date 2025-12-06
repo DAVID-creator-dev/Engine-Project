@@ -10,7 +10,7 @@ TextureGL::~TextureGL()
     glDeleteTextures(1, &textureID);
 }
 
-void TextureGL::LoadResource(const char* path)
+void TextureGL::LoadResource(const char* path, const ResourceLoadParams& params)
 {
     _path = path;
     glGenTextures(1, &textureID);
@@ -33,13 +33,21 @@ void TextureGL::LoadResource(const char* path)
         if (nrChannels == 1) {
             format = internalFormat = GL_RED;
         }
-        else if (nrChannels == 3) {
+        if (nrChannels == 3)
+        {
+            if (params.isSRGB)
+                internalFormat = GL_SRGB;
+            else
+                internalFormat = GL_RGB;
             format = GL_RGB;
-            //internalFormat = useSRGB ? GL_SRGB : GL_RGB;
         }
-        else if (nrChannels == 4) {
+        else if (nrChannels == 4)
+        {
+            if (params.isSRGB)
+                internalFormat = GL_SRGB_ALPHA;
+            else
+                internalFormat = GL_RGBA;
             format = GL_RGBA;
-            //internalFormat = useSRGB ? GL_SRGB_ALPHA : GL_RGBA;
         }
 
         glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, width, height, 0, format, GL_UNSIGNED_BYTE, data);

@@ -10,6 +10,7 @@ class ResourceManager;
 class ScriptManager; 
 class InputManager;
 class HierarchyUI; 
+class ITexture; 
 
 enum class FileCreationType
 {
@@ -34,6 +35,13 @@ private:
 	void DisplayDirectories(const std::vector<std::string>& directories, const std::string& currentPath);
     void DisplayFiles(const std::vector<std::string>& files) const; 
     void ContentResources(const std::string& file) const;
+
+	bool BouttonResource(const std::string& filename, ITexture* tex = nullptr, bool enableDrag = false) const;
+	void DragAndDropResource(const std::string& file) const;
+	ITexture* GetThumbnailTexture(const std::string& file) const;
+	
+    void HandleLeftClickResource(const std::string& file) const;
+	void HandleRightClickResource(const std::string& file) const;
 
     void ContextContentBrowser();
     void OpenFileCreationPopup(FileCreationType type); 

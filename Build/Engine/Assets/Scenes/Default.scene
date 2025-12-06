@@ -1,69 +1,5 @@
 {
     "GameObjects": {
-        "Camera": {
-            "camera": {
-                "Offset": [
-                    0.0,
-                    -4.963623523712158,
-                    18.8928279876709
-                ]
-            },
-            "isActive": true,
-            "parent": "Root",
-            "position": [
-                0.0,
-                -4.963623523712158,
-                18.8928279876709
-            ],
-            "rotation": [
-                0.0,
-                -0.0,
-                0.0
-            ],
-            "scale": [
-                1.0,
-                1.0,
-                1.0
-            ],
-            "tag": "Tag"
-        },
-        "Cube": {
-            "isActive": true,
-            "meshes": {
-                "material": "default.mat",
-                "model": "cube.obj",
-                "render": 0
-            },
-            "parent": "Root",
-            "position": [
-                0.0,
-                -11.699999809265137,
-                2.0
-            ],
-            "rigidBody": {
-                "collision": {
-                    "size": [
-                        1.0,
-                        1.0,
-                        1.0
-                    ],
-                    "type": "box"
-                },
-                "collisionCallbacksEnabled": false,
-                "motionType": 0
-            },
-            "rotation": [
-                0.0,
-                -0.0,
-                0.0
-            ],
-            "scale": [
-                10.0,
-                1.0,
-                10.0
-            ],
-            "tag": "Tag"
-        },
         "Light": {
             "isActive": true,
             "light": {
@@ -97,31 +33,19 @@
             ],
             "tag": "Tag"
         },
-        "PhysicCube": {
+        "Sphere": {
             "isActive": true,
             "meshes": {
-                "material": "default.mat",
-                "model": "cube.obj",
+                "material": "PBR.mat",
+                "model": "sphere.obj",
                 "render": 0
             },
             "parent": "Root",
             "position": [
                 0.0,
-                1.4149450063705444,
+                0.0,
                 0.0
             ],
-            "rigidBody": {
-                "collision": {
-                    "size": [
-                        1.0,
-                        1.0,
-                        1.0
-                    ],
-                    "type": "box"
-                },
-                "collisionCallbacksEnabled": false,
-                "motionType": 2
-            },
             "rotation": [
                 0.0,
                 -0.0,

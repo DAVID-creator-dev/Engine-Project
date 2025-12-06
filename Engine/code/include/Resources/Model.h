@@ -68,7 +68,7 @@ public:
 	ModelGL* GetGL() override { return this; }
 
 private:
-	void LoadResource(const char* path) override;
+	void LoadResource(const char* path, const ResourceLoadParams& params) override;
 	void ProcessNode(aiNode* node, const aiScene* scene); 
 	void ProcessMesh(aiMesh* mesh, const aiScene* scene); 
 

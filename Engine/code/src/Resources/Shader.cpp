@@ -7,7 +7,7 @@ ShaderGL::~ShaderGL()
     glDeleteProgram(shaderProgram);
 }
 
-void ShaderGL::LoadResource(const char* path)
+void ShaderGL::LoadResource(const char* path, const ResourceLoadParams& params)
 {
     _path = path; 
 

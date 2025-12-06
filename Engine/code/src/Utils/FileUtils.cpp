@@ -91,12 +91,15 @@ bool FileUtils::CreateFile(const std::string& baseDir, const std::string& baseNa
 	}
 }
 
-std::string FileUtils::GetExtension(const std::string& filePath)
+std::string FileUtils::GetExtension(const std::string& filePath, bool includeDot)
 {
 	size_t dotPos = filePath.find_last_of('.');
 	if (dotPos != std::string::npos)
 	{
-		return filePath.substr(dotPos); // Inclut le point, ex: ".png"
+		if (includeDot)
+			return filePath.substr(dotPos);      
+		else
+			return filePath.substr(dotPos + 1);  
 	}
 	return "";
 }

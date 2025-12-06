@@ -14,7 +14,7 @@ public:
     void CreateShader(const char* vertexPath, const char* fragmentPath) override;
     GLuint GetProgram() override { return shaderProgram; }
 
-    void LoadResource(const char* path) override;
+    void LoadResource(const char* path, const ResourceLoadParams& params) override;
     std::string GetPath() const override;
 
     void SetUniformVector2D(std::string name, Vector2D value); 

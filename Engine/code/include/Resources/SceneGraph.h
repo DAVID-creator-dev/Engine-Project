@@ -11,7 +11,7 @@ public:
 	SceneGraph();
 	~SceneGraph() override = default; 
 
-	void LoadResource(const char* path) override;
+	void LoadResource(const char* path, const ResourceLoadParams& params) override;
 	void Serialize() override;
 	void Deserialize(const nlohmann::json& json) override;
 

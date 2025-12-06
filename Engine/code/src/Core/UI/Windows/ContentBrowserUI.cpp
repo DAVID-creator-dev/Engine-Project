@@ -2,10 +2,9 @@
 #include "Core/Engine.h"
 
 #include "GameBehaviour/ScriptsManager.h"
+#include "GameBehaviour/GameStateManager.h"
 
 #include "Resources/ResourceManager.h"
-
-#include "GameBehaviour/GameStateManager.h"
 
 #include <imgui.h>
 #include <imgui_internal.h>
@@ -115,18 +114,22 @@ void ContentBrowserUI::DropAsset()
 
 	if (ImGui::BeginDragDropTargetCustom(dropZone, ImGui::GetID("CustomDropZone")))
 	{
-		const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ITEM");
-		if (payload)
-		{
-			const char* droppedPath = static_cast<const char*>(payload->Data);
-			std::string pathStr = droppedPath;
+		std::string payloadNames[] = { "obj", "dae" };
 
-			if (pathStr.ends_with(".obj"))
+		for (const std::string& payloadName : payloadNames) 
+		{
+			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(payloadName.c_str()))
 			{
-				IModel* model = resourceManager->Get<IModel>(droppedPath);
-				stateManager->GetCurrentScene()->CreateGameObject("New GameObject", model, resourceManager->Get<IMaterial>("default.mat"), Vector3D(0.0f, 0.0f, 0.0f), Vector3D(0.0f, 0.0f, 0.0f), Vector3D(1.0f, 1.0f, 1.0f));
+				const char* droppedPath = static_cast<const char*>(payload->Data);
+				std::string pathStr = droppedPath;
+				if (pathStr.ends_with(".obj"))
+				{
+					IModel* model = resourceManager->Get<IModel>(droppedPath);
+					stateManager->GetCurrentScene()->CreateGameObject("New GameObject", model, resourceManager->Get<IMaterial>("default.mat"), Vector3D(0.0f, 0.0f, 0.0f), Vector3D(0.0f, 0.0f, 0.0f), Vector3D(1.0f, 1.0f, 1.0f));
+				}
 			}
 		}
+
 		ImGui::EndDragDropTarget();
 	}
 }
@@ -139,17 +142,150 @@ void ContentBrowserUI::DisplayDirectories(const std::vector<std::string>& direct
 		ImGui::PushID(dir.c_str());
 		ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.0f, 0.0f, 0.0f, 0.0f));
 
-		if (ImGui::ImageButton(dir.c_str(), (ImTextureID)(intptr_t)resourceManager->Get<ITexture>("folder.png")->GetTextureID(), ImVec2(thumbnailSize, thumbnailSize)))
+		bool clicked = false; 
+		ITexture* tex = resourceManager->Get<ITexture>("folder.png");
+		clicked = BouttonResource(FileUtils::FileName(dir), tex);
+
+		if (clicked) 
 		{
 			pathStack.push(currentPath);
 			this->currentPath = currentPath + "/" + dir;
 		}
 
-		ImGui::TextWrapped(dir.c_str());
 		ImGui::PopStyleColor();
 		ImGui::PopID();
+
 		ImGui::EndGroup();
 		ImGui::NextColumn();
+	}
+}
+
+bool ContentBrowserUI::BouttonResource(const std::string& file, ITexture* tex, bool enableDrag) const
+{
+	const float buttonSize = thumbnailSize;
+	const float imageScale = 0.8f;
+	const float imageSize = buttonSize * imageScale;
+
+	bool clicked = ImGui::Button("", ImVec2(buttonSize, buttonSize));
+
+	ImVec2 min = ImGui::GetItemRectMin();
+	ImVec2 size = ImGui::GetItemRectSize();
+
+	ImVec2 imagePos(
+		min.x + (size.x - imageSize) * 0.5f,
+		min.y + (size.y - imageSize) * 0.5f
+	);
+
+	if (tex)
+	{
+		if (tex && tex->GetTextureID() != 0)
+		{
+			ImGui::GetWindowDrawList()->AddImage(
+				(ImTextureID)(intptr_t)tex->GetTextureID(),
+				imagePos,
+				ImVec2(imagePos.x + imageSize, imagePos.y + imageSize)
+			);
+		}
+	}
+
+	if (enableDrag)
+		DragAndDropResource(file);
+
+	float textWidth = ImGui::CalcTextSize(file.c_str()).x;
+	float textX = ImGui::GetCursorPosX() + (thumbnailSize - textWidth) * 0.5f;
+	ImGui::SetCursorPosX(textX);
+	ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 4);
+	ImGui::TextWrapped("%s", file.c_str());
+
+	return clicked;
+}
+
+void ContentBrowserUI::DragAndDropResource(const std::string& file) const
+{
+	std::string ext = FileUtils::GetExtension(file, false);
+	const char* dragType = ext.c_str();
+
+	void* payloadData = (void*)file.c_str();
+	int payloadSize = (int)strlen(file.c_str()) + 1;
+
+	if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID))
+	{
+		ImGui::SetDragDropPayload(dragType, payloadData, payloadSize);
+		ImGui::Text("Dragging: %s", file.c_str());
+		ImGui::EndDragDropSource();
+	}
+}
+
+ITexture* ContentBrowserUI::GetThumbnailTexture(const std::string& file) const
+{
+	std::string ext = FileUtils::GetExtension(file, false);
+
+	if (ext == "png" || ext == "jpg" || ext == "jpeg" || ext == "tga" || ext == "bmp")
+		return resourceManager->Get<ITexture>(file.c_str());
+
+	static const std::unordered_map<std::string, std::string> iconMap = {
+		{ "obj",  "obj.png"  }, { "fbx",  "obj.png"  }, { "dae",  "obj.png"  },	//Object
+		{ "cpp",  "cpp.png"  }, { "h",    "h.png"    }, //Script
+	};
+
+	auto it = iconMap.find(ext);
+	if (it != iconMap.end())
+		return resourceManager->Get<ITexture>(it->second.c_str());
+	
+	return nullptr; 
+}
+
+void ContentBrowserUI::HandleLeftClickResource(const std::string& file) const
+{
+	std::string extension = FileUtils::GetExtension(file, false);
+
+	if (extension == "scene")
+	{
+		hierarchy->ClearCurrentObject();
+		ISceneGraph* graph = resourceManager->Get<SceneGraph>(file.c_str());
+		stateManager->SetCurrentScene(graph);
+	}
+	else if (extension == "h")
+	{
+		scriptManager->OpenScriptInVisualStudio("../EchoEngine.sln", "Assets/Scripts/" + file);
+	}
+	else if (extension == "cpp")
+	{
+		scriptManager->OpenScriptInVisualStudio("../EchoEngine.sln", "Assets/Scripts/" + file);
+	}
+}
+
+void ContentBrowserUI::HandleRightClickResource(const std::string& file) const
+{
+	std::string extension = FileUtils::GetExtension(file, false);
+	std::string filename = FileUtils::FileName(file);
+
+	if (ImGui::BeginPopupContextItem(("ContextMenu##" + filename).c_str()))
+	{
+		if (extension == "scene")
+		{
+			if (ImGui::MenuItem("Delete"))
+			{
+				ISceneGraph* graph = resourceManager->Get<SceneGraph>(filename.c_str());
+				if (stateManager->GetCurrentScene() != graph)
+				{
+					FileUtils::DeleteFile(graph->GetPath());
+					resourceManager->Delete<SceneGraph>(filename.c_str());
+				}
+				else
+				{
+					std::cerr << "[Error] Cannot delete scene in use: " << filename << std::endl;
+				}
+			}
+		}
+		else if (extension == "cpp" || extension == "h")
+		{
+			if (ImGui::MenuItem("Delete"))
+			{
+				DeleteScript(scriptManager->GetScriptNameFromFile(file));
+			}
+		}
+		ImGui::EndPopup();
 	}
 }
 
@@ -170,125 +306,23 @@ void ContentBrowserUI::ContentResources(const std::string& file) const
 {
 	ImGui::BeginGroup();
 
-	std::string extension = FileUtils::GetExtension(file);
-	std::string filename = FileUtils::FileName(file);
+	ITexture* displayTex = GetThumbnailTexture(file);
 
-	const char* dragType = "FILE";
-	void* payloadData = nullptr;
-	int payloadSize = 0;
-
-	ImVec2 previewSize = ImVec2(thumbnailSize, thumbnailSize);
-	ITexture* icon = nullptr;
-
-	if (extension == ".png" || extension == ".jpg")
-	{
-		icon = resourceManager->Get<ITexture>(file.c_str());
-		dragType = "TEXTURE";
-		payloadData = &icon; 
-		payloadSize = sizeof(ITexture*);
-	}
-	else if (extension == ".obj")
-	{
-		icon = resourceManager->Get<ITexture>("obj.png");
-		dragType = "ITEM";
-		payloadData = (void*)file.c_str(); 
-		payloadSize = (int)strlen(file.c_str()) + 1;
-	}
-	else if (extension == ".h")
-	{
-		icon = resourceManager->Get<ITexture>("h.png");
-	}
-	else if (extension == ".cpp")
-	{
-		icon = resourceManager->Get<ITexture>("cpp.png");
-	}
-
-	ImGui::PushID(file.c_str()); 
+	ImGui::PushID(file.c_str());
 
 	bool clicked = false;
 
-	if (icon)
-	{
-		clicked = ImGui::ImageButton(file.c_str(), (ImTextureID)(intptr_t)icon->GetTextureID(), previewSize);
-
-		if (ImGui::BeginDragDropSource())
-		{
-			void* payloadPtr = icon;
-			ImGui::SetDragDropPayload(dragType, payloadData, payloadSize);
-			ImGui::Text("Dragging: %s", filename.c_str());
-			ImGui::EndDragDropSource();
-		}
-	}
+	if (displayTex && displayTex->GetTextureID() != 0)
+		clicked = BouttonResource(file, displayTex, true);
 	else
-	{
-		clicked = ImGui::Button("", previewSize);
-	}
+		clicked = BouttonResource(file, nullptr, true);
 
 	ImGui::PopID();
-
+	
 	if (clicked)
-	{
-		if (extension == ".scene")
-		{
-			hierarchy->ClearCurrentObject(); 
-			ISceneGraph* graph = resourceManager->Get<SceneGraph>(filename.c_str());
-			stateManager->SetCurrentScene(graph);
-		}
-		else if (extension == ".h")
-		{
-			scriptManager->OpenScriptInVisualStudio("../EchoEngine.sln", "Assets/Scripts/" + file);
-		}
-		else if (extension == ".cpp")
-		{
-			scriptManager->OpenScriptInVisualStudio("../EchoEngine.sln", "Assets/Scripts/" + file);
+		HandleLeftClickResource(file);
+	HandleRightClickResource(file);
 
-		}
-	}
-
-	if (ImGui::BeginPopupContextItem(("ContextMenu##" + file).c_str()))
-	{
-		if (extension == ".scene")
-		{
-			if (ImGui::MenuItem("Delete"))
-			{
-				ISceneGraph* graph = resourceManager->Get<SceneGraph>(filename.c_str());
-
-				if (stateManager->GetCurrentScene() != graph)
-				{
-					FileUtils::DeleteFile(graph->GetPath());
-					resourceManager->Delete<SceneGraph>(filename.c_str());
-				}
-				else
-				{
-					std::cerr << "[Error] Cannot delete the scene currently in use: " << filename << std::endl;
-				}
-			}
-		}
-		else if (extension == ".cpp")
-		{
-			if (ImGui::MenuItem("Delete"))
-			{
-				DeleteScript(scriptManager->GetScriptNameFromFile(file));
-			}
-		}
-		else if (extension == ".h")
-		{
-			if (ImGui::MenuItem("Delete"))
-			{
-				DeleteScript(scriptManager->GetScriptNameFromFile(file));
-			}
-		}
-
-		ImGui::EndPopup();
-	}
-
-	float textWidth = ImGui::CalcTextSize(filename.c_str()).x;
-	float buttonWidth = previewSize.x;
-	float cursorX = ImGui::GetCursorPosX();
-	float offsetX = (buttonWidth - textWidth) * 0.5f;
-
-	ImGui::SetCursorPosX(cursorX + offsetX);
-	ImGui::TextWrapped("%s", filename.c_str());
 	ImGui::EndGroup();
 }
 
@@ -296,7 +330,7 @@ void ContentBrowserUI::ContextContentBrowser()
 {
 	if (ImGui::BeginPopupContextWindow("RightClickBrowser"))
 	{
-		if (ImGui::MenuItem("Create new Scene"))
+		if (ImGui::Button("Create new Scene"))
 		{
 			OpenFileCreationPopup(FileCreationType::Scene);
 		}

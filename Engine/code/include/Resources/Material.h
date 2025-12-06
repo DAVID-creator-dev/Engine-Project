@@ -28,7 +28,7 @@ public:
 	MaterialGL(); 
 	~MaterialGL() override = default;
 
-	void LoadResource(const char* path) override;
+	void LoadResource(const char* path, const ResourceLoadParams& params) override;
 
 	void SetAlbedoMap(ITexture* tex) override { materialParams.albedoMap = tex; }
 	void SetMetallicMap(ITexture* tex) override { materialParams.metallicMap = tex; }

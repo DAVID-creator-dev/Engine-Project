@@ -8,7 +8,7 @@ public:
     TextureGL() = default;
     ~TextureGL() override;
 
-    void LoadResource(const char* path) override;
+    void LoadResource(const char* path, const ResourceLoadParams& params) override;
 
     TextureGL* GetGL() override { return this; }
     GLuint GetTextureID() const override { return textureID; }

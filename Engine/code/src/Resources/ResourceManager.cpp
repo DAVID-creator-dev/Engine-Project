@@ -33,6 +33,54 @@ void ResourceManager::LoadResourcesFromDirectory(const std::string& directoryPat
     }
 }
 
+template<>
+ITexture* ResourceManager::CreateSpecificResource(const char* path, const ResourceLoadParams& params)
+{
+    auto tex = Engine::GetInstance()->GetRenderInterface()->InstanciateTexture(); 
+    tex->LoadResource(path, params); 
+    return tex;
+}
+
+template<>
+IModel* ResourceManager::CreateSpecificResource(const char* path, const ResourceLoadParams& params)
+{
+    auto model = Engine::GetInstance()->GetRenderInterface()->InstanciateModel();
+    model->LoadResource(path, params);
+    return model;
+}
+
+template<>
+IMaterial* ResourceManager::CreateSpecificResource(const char* path, const ResourceLoadParams& params)
+{
+    auto material = Engine::GetInstance()->GetRenderInterface()->InstanciateMaterial();
+    material->LoadResource(path, params);
+    return material;
+}
+
+template<>
+ISound* ResourceManager::CreateSpecificResource(const char* path, const ResourceLoadParams& params)
+{
+    auto sound = new Sound();
+    sound->LoadResource(path, params);
+    return sound;
+}
+
+template<>
+ISceneGraph* ResourceManager::CreateSpecificResource(const char* path, const ResourceLoadParams& params)
+{
+    auto scene = new SceneGraph();
+    scene->LoadResource(path, params);
+    return scene;
+}
+
+template<>
+IShader* ResourceManager::CreateSpecificResource(const char* path, const ResourceLoadParams& params)
+{
+    auto shader = Engine::GetInstance()->GetRenderInterface()->InstanciateShader();
+    shader->LoadResource(path, params);
+    return shader;
+}
+
 void ResourceManager::SaveResources(const char* path)
 {
     nlohmann::json jsonAssetsData;
@@ -56,6 +104,16 @@ void ResourceManager::LoadResources()
 
     gameStateManager->SetCurrentScene(graph);
 
+}
+
+bool ResourceManager::IsSRGBTexture(const std::string& path)
+{
+    std::string lower = path;
+    std::transform(lower.begin(), lower.end(), lower.begin(), ::tolower);
+
+    return lower.find("albedo") != std::string::npos ||
+        lower.find("diffuse") != std::string::npos ||
+        lower.find("basecolor") != std::string::npos;
 }
 
 void ResourceManager::ImportAssets()

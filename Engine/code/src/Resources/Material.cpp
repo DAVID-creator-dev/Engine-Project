@@ -11,7 +11,7 @@ MaterialGL::MaterialGL()
     resourceManager = Engine::GetInstance()->GetResourceManager(); 
 }
 
-void MaterialGL::LoadResource(const char* path)
+void MaterialGL::LoadResource(const char* path, const ResourceLoadParams& params)
 {
 	_path = path;
 

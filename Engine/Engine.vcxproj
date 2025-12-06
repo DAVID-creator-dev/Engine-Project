@@ -20,7 +20,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="code\include\Core\UI\Component\ComponentUI.h" />
-    <ClInclude Include="code\include\Core\UI\Component\MeshRendererUI .h" />
     <ClInclude Include="code\include\Core\UI\Windows\ContentBrowserUI.h" />
     <ClInclude Include="code\include\Core\UI\Windows\GizmoUI.h" />
     <ClInclude Include="code\include\Core\UI\Windows\HierarchyUI.h" />
@@ -92,15 +91,14 @@
     <ClInclude Include="code\include\Physics\CollisionCollector.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="code\include\Core\UI\Component\MeshRendererUI .cpp" />
     <ClCompile Include="code\include\Core\UI\Windows\LogUI.h" />
+    <ClCompile Include="code\include\Utils\ResourceParams.h" />
     <ClCompile Include="code\src\Core\UI\Windows\GizmoUI.cpp" />
     <ClCompile Include="code\src\Core\UI\Windows\LogUI.cpp" />
     <ClCompile Include="code\src\Core\UI\Windows\MenuUI.cpp" />
     <ClCompile Include="code\src\Core\UI\Windows\PerformanceUI.cpp" />
     <ClCompile Include="code\include\LowRenderer\Text.cpp" />
     <ClCompile Include="code\src\Core\Engine.cpp" />
-    <ClCompile Include="code\src\Core\UI\Component\MeshRendererUI.cpp" />
     <ClCompile Include="code\src\Core\UI\Windows\ContentBrowserUI.cpp" />
     <ClCompile Include="code\src\Core\UI\ImGuiEngine.cpp" />
     <ClCompile Include="code\src\Core\UI\Windows\HierarchyUI.cpp" />

@@ -32,38 +32,19 @@ public:
     T* CreateResource(const char* path)
     {
         static_assert(std::is_base_of<IResource, T>::value, "T must inherit from IResource");
-    	std::string key = std::filesystem::path(path).filename().string();
+        std::string key = std::filesystem::path(path).filename().string();
 
-        auto it = resources.find(key);
-        if (it != resources.end())
-        {
-            delete it->second;
-            resources.erase(it);
-        }
+        if (auto it = resources.find(key); it != resources.end())
+            return dynamic_cast<T*>(it->second);
 
-        IResource* resource = nullptr;
-        if (std::is_same_v<T, ITexture>)
-            resource = Engine::GetInstance()->GetRenderInterface()->InstanciateTexture();
-        else if (std::is_same_v<T, IModel>)
-            resource = Engine::GetInstance()->GetRenderInterface()->InstanciateModel();
-        else if (std::is_same_v<T, IMaterial>)
-            resource = Engine::GetInstance()->GetRenderInterface()->InstanciateMaterial();
-        else if (std::is_same_v<T, IShader>)
-            resource = Engine::GetInstance()->GetRenderInterface()->InstanciateShader();
-        else if (std::is_same_v<T, ISound>)
-            resource = new Sound();
-        else if (std::is_same_v<T, ISceneGraph>)
-            resource = new SceneGraph(); 
+		ResourceLoadParams params;
+		IsSRGBTexture(path) ? params.isSRGB = true : params.isSRGB = false;
 
-        if (!resource)
-        {
-            std::cerr << "Error: Unable to create resource !" << std::endl;
-            return nullptr;
-        }
+        T* resource = CreateSpecificResource<T>(path, params);
+        if (!resource) return nullptr;
 
-        resource->LoadResource(path);
         resources[key] = resource;
-        return dynamic_cast<T*>(resource);
+        return resource;
     }
 
     template <typename T>
@@ -103,6 +84,11 @@ private:
 
 	template <typename T>
     void LoadResourcesFromDirectory(const std::string& directoryPath, const::std::string& targetExtension = "");
+
+	template <typename T>
+	T* CreateSpecificResource(const char* path, const ResourceLoadParams& params);
+
+    bool IsSRGBTexture(const std::string& path); 
 
     void ImportAssets();
     void ExportAssets(nlohmann::json& jsonData);

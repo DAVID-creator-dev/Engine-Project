@@ -160,13 +160,13 @@ vec3 computePointLight(vec3 N, vec3 V, vec3 F0, PointLight dLight, vec3 albedo, 
     float G = GeometrySmith(N, V, L, roughness);      
     vec3 F = fresnelSchlick(clamp(dot(H, V), 0.0, 1.0), F0);
 
-    vec3 numerator = NDF * G * F; 
-    float denominator = 4.0 * max(dot(N, V), 0.0) * max(dot(N, L), 0.0) + 0.0001;
-    vec3 specular = numerator / denominator;
-
     vec3 kS = F;
     vec3 kD = vec3(1.0) - kS;
     kD *= 1.0 - metallic;
+
+    vec3 numerator = NDF * G * F; 
+    float denominator = 4.0 * max(dot(N, V), 0.0) * max(dot(N, L), 0.0) + 0.0001;
+    vec3 specular = numerator / denominator;
 
     float NdotL = max(dot(N, L), 0.0);
     if (useToonShading)
@@ -219,7 +219,7 @@ vec3 getNormalFromMap()
 
     vec3 N   = normalize(fs_in.Normal);
     vec3 T  = normalize(Q1*st2.t - Q2*st1.t);
-    vec3 B  = -normalize(cross(N, T));
+    vec3 B  = normalize(cross(N, T));
     mat3 TBN = mat3(T, B, N);
 
     return normalize(TBN * tangentNormal);
@@ -227,7 +227,10 @@ vec3 getNormalFromMap()
 
 void main()
 {    
-    vec3 albedo = hasAlbedoMap ? pow(texture(albedoMap, fs_in.TexCoord).rgb, vec3(2.2)) : material.albedo;
+    
+    vec3 albedo = hasAlbedoMap ? texture(albedoMap, fs_in.TexCoord).rgb : material.albedo;
+
+    //vec3 albedo = hasAlbedoMap ? pow(texture(albedoMap, fs_in.TexCoord).rgb, vec3(2.2)) : material.albedo;
     float metallic = hasMetallicMap ? texture(metallicMap, fs_in.TexCoord).r : material.metallic;
     float roughness = hasRoughnessMap ? texture(roughnessMap, fs_in.TexCoord).r : material.roughness;
     float ao = hasAOMap ? texture(aoMap, fs_in.TexCoord).r : material.ao;

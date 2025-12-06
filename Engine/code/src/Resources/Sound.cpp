@@ -6,7 +6,7 @@
 #include "Core/Engine.h"
 #include "Sound/AudioEngine.h"
 
-void Sound::LoadResource(const char* path)
+void Sound::LoadResource(const char* path, const ResourceLoadParams& params)
 {
     _path = path; 
 

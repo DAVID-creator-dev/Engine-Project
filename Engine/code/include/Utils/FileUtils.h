@@ -17,7 +17,7 @@ public:
 	static bool DeleteFile(const std::string& path);
 	static bool CreateFile(const std::string& baseDir, const std::string& baseName, const std::string& extension, std::string& outFilename);
 
-	static std::string GetExtension(const std::string& filePath);
+	static std::string GetExtension(const std::string& filePath, bool includeDot = true);
 
 	//Rename a file (returns true if successful)
 	static bool RenameFile(const std::string& oldPath, const std::string& newPath);

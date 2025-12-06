@@ -69,7 +69,7 @@ std::string SceneGraph::CheckName(const char* _name)
 	return finalName;
 }
 
-void SceneGraph::LoadResource(const char* path)
+void SceneGraph::LoadResource(const char* path, const ResourceLoadParams& params)
 {
     _path = path;
 

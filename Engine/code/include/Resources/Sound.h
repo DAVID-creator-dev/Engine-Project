@@ -4,7 +4,7 @@
 class Sound : public ISound
 {
 public:
-	void LoadResource(const char* path) override;
+	void LoadResource(const char* path, const ResourceLoadParams& params) override;
 
 	FMOD::Sound* GetInternalSound() const override;
 

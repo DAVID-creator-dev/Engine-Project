@@ -2,7 +2,7 @@
 #include <fstream>
 #include <limits>
 
-void ModelGL::LoadResource(const char* path)
+void ModelGL::LoadResource(const char* path, const ResourceLoadParams& params)
 {
 	_path = path;
 

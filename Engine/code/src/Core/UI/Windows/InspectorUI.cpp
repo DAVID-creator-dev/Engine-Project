@@ -427,18 +427,26 @@ void InspectorUI::MaterialComponent()
 
 				if (ImGui::BeginDragDropTarget())
 				{
-					if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("TEXTURE"))
+					std::string payloadNames[] = { "jpg", "jpeg", "png", "tga", "bmp" }; 
+
+					for (const std::string& payloadName : payloadNames)
 					{
-						if (payload->DataSize == sizeof(ITexture*))
+						if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(payloadName.c_str()))
 						{
-							ITexture* droppedTex = *reinterpret_cast<ITexture* const*>(payload->Data);
-							if (droppedTex)
-								setTexFunc(droppedTex);
+							const char* droppedPath = static_cast<const char*>(payload->Data);
+							
+							if (droppedPath && payload->DataSize > 0)
+							{
+								ITexture* droppedTex = resourceManager->Get<ITexture>(droppedPath);
+								if (droppedTex)
+									setTexFunc(droppedTex);
+							}
 						}
 					}
+
 					ImGui::EndDragDropTarget();
 				}
-
+						
 				if (!tex)
 				{
 					float value = getValueFunc();
